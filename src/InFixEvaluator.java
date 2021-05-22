@@ -5,57 +5,61 @@ import java.lang.Math;
 
 /**
  * Kyle Kovacik 9/3/18
+ * 
+ * InFixEvaluator to Evaluate Simple Arithmetic Equations
+ * Uses and Operand and Operator Stack
+ * 
  */
 
 
 public class InFixEvaluator
 {
+
+    // Evaluates Arithmetic String
     public double evaluator(String str) throws Exception
     {
-        //System.out.println("Input String: " + str);
-        //Write your code here
-        // The input comes as a string 
-        // The final output should be returned as a double.
-        // The precision does not matter, as the answers are rounded to the fourth decimal value.  
+         
         Stack operandsStack = new Stack(10);
         Stack operatorsStack = new Stack(10);
 
+        // Parse Entire Input String
         for (int i = 0; i < str.length(); i++) {
 
+            // Get Next Operand or Operator in the String
             String input = "";
             int length = 0;
             for (int j = i; j != str.length() && str.charAt(j) != ' '; j++) {
                 input = input + str.charAt(j);
                 length++;
             }
-            //System.out.println("Length: " + length);
-            //System.out.println("Input: " + input);
-            //System.out.println("i: " + i);
+            
+            // Moves i to the last character of Operand or Operator
             if (length != 0) {
-                i += (length - 1); // skips redundant characters
+                i += (length - 1);
             }
 
+            // Ignore Spaces
             if (input.equals("")) {
                 // Do Nothing
             }
-            else if (input.equals("(")|| input.equals("[") || input.equals("{")) { // ignore left parentheses
+            // Left Enclosure, Store in Operator Stack
+            else if (input.equals("(")|| input.equals("[") || input.equals("{")) {
                 operatorsStack.push(input);
-                //System.out.println("Push: " + input);
             }
-            else if (input.equals("+") || input.equals("-") || input.equals("*") || input.equals("/") || input.equals("^") || input.equals("sin") || input.equals("cos") || input.equals("log")) { // normal operators
+            // Evaluatoring Operators, Store in Operator Stack
+            else if (input.equals("+") || input.equals("-") || input.equals("*") || input.equals("/") || input.equals("^") || input.equals("sin") || input.equals("cos") || input.equals("log")) {
                 operatorsStack.push(input);
-                //System.out.println("Push: " + input);
             }
-            else if (input.equals(")") || input.equals("]") || input.equals("}")) { // start operating
+            // Right Enclosure, Begin Operations
+            else if (input.equals(")") || input.equals("]") || input.equals("}")) {
                 try {
 
                     String operator = (String) operatorsStack.pop(); // Stack.pop() doesn't return the value in the given, so this has to be done
 
-                    //String operator2 = (String) operatorsStack.top();
-                    //operatorsStack.pop();
-
                     double operandOne;
                     double operandTwo;
+
+                    // Pop Two Operands, Perform Operation, then Push the resulting Operand
 
                     if (operator.equals("+")) {
                         String operator2 = (String) operatorsStack.pop();
@@ -142,21 +146,21 @@ public class InFixEvaluator
                             System.out.println("Invalid expression");
                             System.exit(0);
                         }
-                    }
+                    } // Ignore Redundant Enclosures
                     else if ((operator.equals("(") && input.equals(")")) || (operator.equals("[") && input.equals("]")) || (operator.equals("{") && input.equals("}"))) {
-                        // Nothing happens, this is good
-                    }
+                        
+                    } // Incorrect Arguments Print Invalid Expression
                     else {
-                        //Not Sure About This
                         System.out.println("Invalid expression");
                         System.exit(0);
                     }
-                } catch (Exception e) {
+                }   // Catches Invalid Input
+                    catch (Exception e) {
                     System.out.println("Invalid expression");
                     System.exit(0);
                 }
-            }
-            else { // if the number is valid, store it
+            } // Store Valid Number Operands in Operand Stack
+            else { 
                 for (int j = 0; j < input.length(); j++) {
                    if (!((int) input.charAt(j) >= 48 && (int) input.charAt(j) <= 57) && input.charAt(j) != '.') {
                        System.out.println("Invalid expression");
@@ -165,12 +169,9 @@ public class InFixEvaluator
                 }
 
                 operandsStack.push(Double.parseDouble(input));
-                //System.out.println("Push: " + input);
             }
 
-
-            //System.out.println("---------------------");
-        }
+        } // Incorrect Amount of Operators
         if (!operatorsStack.IsEmpty()) {
             System.out.println("Invalid expression");
             System.exit(0);
@@ -179,17 +180,16 @@ public class InFixEvaluator
         return answer;
     }
 
+    // Takes Input for ./input.txt
+    // Prints Evaluated Response
     public static void main(String[] args)throws IOException
     {
-        // The buffered reader has been provided.
-        // The examples can be found in input.txt file, provided in the src folder.
-        // Feel free to add your own examples.
-        // Make sure the tests work before submitting your final code.
-
+    
         InFixEvaluator i = new InFixEvaluator();
         try
         {
-            BufferedReader br = new BufferedReader(new FileReader("src/input.txt"));
+            // Reads Input for input.txt and evaluates line for line
+            BufferedReader br = new BufferedReader(new FileReader("./input.txt"));
             String line;
             while ((line = br.readLine()) != null)
             {
